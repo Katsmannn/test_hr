@@ -115,8 +115,15 @@ def delete_position(request, position_id):
     conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
                        password=DB_PASSWORD)
     cur = conn.cursor()
-    cur.execute(delete_position_query, (position_id,))
-    conn.commit()
+    try:
+        cur.execute(delete_position_query, (position_id,))
+        conn.commit()
+    except Exception:
+        cur.close()
+        conn.close()
+        conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
+                       password=DB_PASSWORD)
+        cur = conn.cursor()
     cur.execute(all_positions_query)
     result = cur.fetchall()
     cur.close()

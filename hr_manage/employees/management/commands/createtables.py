@@ -56,14 +56,14 @@ class Command(BaseCommand):
         create_table_positions_query = (
             'CREATE TABLE positions '
             + '(id SERIAL PRIMARY KEY, name TEXT, category TEXT, '
-            + 'UNIQUE (name, category)'
+            + 'UNIQUE (name, category))'
         )
         create_table_employees_query = (
             'CREATE TABLE employees '
-            + '(id SERIAL PRIMARY KEY, full_name TEXT, birthday DATA, '
+            + '(id SERIAL PRIMARY KEY, full_name TEXT, birthday DATE, '
             + 'sex TEXT, '
-            + 'position_id INT REFERENCES positions(id) ON DELETE SET NULL), '
-            + 'UNIQUE (full_name, birthday'
+            + 'position_id INT REFERENCES positions(id) ON DELETE RESTRICT, '
+            + 'UNIQUE (full_name, birthday))'
         )
         create_tables_query = {
             'positions': create_table_positions_query,

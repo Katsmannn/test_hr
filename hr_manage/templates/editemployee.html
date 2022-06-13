@@ -1,0 +1,4 @@
+{% extends "newemployee.html" %}
+{% block title %}Редактирование карточки сотрудника{% endblock %}
+{% block card-header %}Редактирование карточки сотрудника{% endblock %}
+{% block form %}<form action="/employees/{{ employee_id }}/edit" method="post">{% endblock %}

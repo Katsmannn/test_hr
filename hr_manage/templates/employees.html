@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+  {% block content %}
+    <div class="card text-center">
+      <div class="card-header">
+        Список сотрудников
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Личные карточки сотрудников</h5>
+          <div class="container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">ФИО</th>
+                      <th scope="col">Должность</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for employee in page %}
+                      <tr>
+                        <th scope="row">{{ employee.1 }}</th>
+                        <td>{{ employee.2 }}</td>
+                        <td>
+                          <a href="{% url 'employee_detail' employee_id=employee.0 %}" type="button" class="btn btn-secondary">Подробнее</a>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+          </div>
+          {% include "includes/paginator.html" with items=page paginator=paginator %}
+        <a href="{% url 'new_employee' %}" type="button" class="btn btn-primary">Новый сотрудник</a>
+    </div>
+  {% endblock %}

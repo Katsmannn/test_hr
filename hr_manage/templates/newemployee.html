@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Новый сотрудник{% endblock %}
+{% block content %}
+
+  <div class="row justify-content-center">
+    <div class="col-md-8 p-5">
+      <div class="card">
+        <div class="card-header">{% block card-header %}Новый сотрудник{% endblock %}</div>
+        <div class="card-body">
+
+          {% for error in form.errors %}
+            <div class="alert alert-danger" role="alert">
+              {{ error }}
+            </div>
+          {% endfor %}
+          {% block form %}<form action="/employees/new/" method="post">{% endblock %}
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Сохранить">
+          </form>
+        </div> <!-- card body -->
+      </div> <!-- card -->
+    </div> <!-- col -->
+  </div> <!-- row -->
+
+{% endblock %}

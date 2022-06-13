@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <h5 class="card-header">Личная карточка сотрудника</h5>
+  <div class="card-body">
+    <h5 class="card-title">{{ employee.1 }}</h5>
+    <p class="card-text">Должность/категория сотрудника: {{ employee.4 }}</p>
+    <p class="card-text">Возраст: {{ employee.3 }}</p>
+    <p class="card-text">Пол: {{ employee.2 }}</p>
+    <a href="{% url 'edit_employee' employee_id=employee.0 %}" class="btn btn-warning">Изменить</a>
+    <a href="#" class="btn btn-danger">Удалить</a>
+  </div>
+</div>
+{% endblock %}

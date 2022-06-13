@@ -21,7 +21,7 @@
                         <td>{{ position.2 }}</td>
                         <td>
                           <a href="{% url 'edit_position' position_id=position.0 %}" type="button" class="btn btn-warning">Изменить</a>
-                          <a type="button" class="btn btn-danger" value="Delete">Удалить</a>
+                          <a href="{% url 'delete_position' position_id=position.0 %}" type="button" class="btn btn-danger" value="Delete">Удалить</a>
                         </td>
                       </tr>
                     {% endfor %}

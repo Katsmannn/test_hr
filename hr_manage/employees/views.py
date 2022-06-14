@@ -119,19 +119,10 @@ def delete_position(request, position_id):
         cur.execute(delete_position_query, (position_id,))
         conn.commit()
     except Exception:
-        cur.close()
-        conn.close()
-        conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
-                       password=DB_PASSWORD)
-        cur = conn.cursor()
-    cur.execute(all_positions_query)
-    result = cur.fetchall()
+        pass
     cur.close()
     conn.close()
-    paginator = Paginator(result, PER_PAGE)
-    page_number = request.GET.get('page')
-    page = paginator.get_page(page_number)
-    return render(request, 'positions.html', {'page': page})
+    return redirect('positions')
 
 
 def employees(request):
@@ -286,23 +277,12 @@ def delete_employee(request, employee_id):
     '''Удаление записи сотрудника с id=employee_id.'''
 
     delete_employee_query = 'DELETE FROM employees WHERE id=%s'
-    all_employees_query = (
-        'SELECT employees.id, employees.full_name, positions.name '
-        + 'FROM employees '
-        + 'JOIN positions ON employees.position_id=positions.id '
-        + 'ORDER BY employees.full_name'
-    )
 
     conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
                        password=DB_PASSWORD)
     cur = conn.cursor()
     cur.execute(delete_employee_query, (employee_id,))
     conn.commit()
-    cur.execute(all_employees_query)
-    result = cur.fetchall()
     cur.close()
     conn.close()
-    paginator = Paginator(result, PER_PAGE)
-    page_number = request.GET.get('page')
-    page = paginator.get_page(page_number)
-    return render(request, 'employees.html', {'page': page})
+    return redirect('employees')

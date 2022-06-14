@@ -55,10 +55,16 @@ def new_position(request):
         conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
                            password=DB_PASSWORD)
         cur = conn.cursor()
-        cur.execute(
-            create_position_query, (new_position_name, new_position_category)
-        )
-        conn.commit()
+        try:
+            cur.execute(
+                create_position_query,
+                (new_position_name, new_position_category)
+            )
+            conn.commit()
+        except Exception:
+            cur.close()
+            conn.close()
+            return render(request, 'newposition.html', {'form': form})
         cur.close()
         conn.close()
         return redirect('positions')
@@ -88,14 +94,24 @@ def edit_position(request, position_id):
         new_position_category = form.cleaned_data['category']
 
         update_position_query = (
-            "UPDATE positions SET name=%s category=%s WHERE id=%s;"
+            "UPDATE positions SET name=%s, category=%s WHERE id=%s;"
         )
 
-        cur.execute(
-            update_position_query,
-            (new_position_name, new_position_category, position_id)
-        )
-        conn.commit()
+        try:
+            cur.execute(
+                update_position_query,
+                (new_position_name, new_position_category, position_id)
+            )
+            conn.commit()
+        except Exception as e:
+            print(e)
+            cur.close()
+            conn.close()
+            return render(
+                request,
+                'editposition.html',
+                 {'form': form, 'position_id': position_id}
+            )
         cur.close()
         conn.close()
         return redirect('positions')
@@ -110,7 +126,6 @@ def delete_position(request, position_id):
     '''Удаление должности с id=position_id.'''
 
     delete_position_query = 'DELETE FROM positions WHERE id=%s'
-    all_positions_query = 'SELECT * FROM positions ORDER BY name'
 
     conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
                        password=DB_PASSWORD)
@@ -172,16 +187,21 @@ def new_employee(request):
         conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
                            password=DB_PASSWORD)
         cur = conn.cursor()
-        cur.execute(
-            create_employee_query,
-            (
-                new_employee_name,
-                new_employee_position,
-                new_employee_birthday,
-                new_employee_sex
+        try:
+            cur.execute(
+                create_employee_query,
+                (
+                    new_employee_name,
+                    new_employee_position,
+                    new_employee_birthday,
+                    new_employee_sex
+                )
             )
-        )
-        conn.commit()
+            conn.commit()
+        except Exception:
+            cur.close()
+            conn.close()
+            return render(request, 'newemployee.html', {'form': form})
         cur.close()
         conn.close()
         return redirect('employees')
@@ -225,16 +245,25 @@ def edit_employee(request, employee_id):
             + 'WHERE id=%s;'
         )
 
-        cur.execute(
-            update_employees_query, (
-                new_employee_name,
-                new_employee_birthday,
-                new_employee_sex,
-                new_employee_position,
-                employee_id
+        try:
+            cur.execute(
+                update_employees_query, (
+                    new_employee_name,
+                    new_employee_birthday,
+                    new_employee_sex,
+                    new_employee_position,
+                    employee_id
+                )
             )
-        )
-        conn.commit()
+            conn.commit()
+        except Exception:
+            cur.close()
+            conn.close()
+            return render(
+                request,
+                'editemployee.html',
+                {'form': form, 'employee_id': employee_id}
+            )
         cur.close()
         conn.close()
         return redirect('employee_detail', employee_id=employee_id)

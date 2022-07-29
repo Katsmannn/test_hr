@@ -32,13 +32,12 @@ def _get_positions():
 
     all_positions_query = 'SELECT id, name, category FROM positions'
 
-    conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
-                       password=DB_PASSWORD)
-    cur = conn.cursor()
-    cur.execute(all_positions_query)
-    result = cur.fetchall()
-    cur.close()
-    conn.close()
+    with pg2.connect(
+        dbname=DB_NAME, user=DB_USER, host=DB_HOST, password=DB_PASSWORD
+    ) as conn:
+        with conn.cursor() as cur:
+            cur.execute(all_positions_query)
+            result = cur.fetchall()
     return [(x[0], x[1] + '/' + x[2]) for x in result]
 
 
@@ -72,3 +71,4 @@ class EmployeeForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(EmployeeForm, self).__init__(*args, **kwargs)
         self.fields['position'].choices = _get_positions()
+

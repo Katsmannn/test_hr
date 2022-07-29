@@ -56,7 +56,17 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'localhost',
-        'PORT': 5432
+        'PORT': 5432,
+        'TEST': {
+            'DEPENDENCIES': ['test_sqlite'],
+        }
+    },
+    'test_sqlite': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'TEST': {
+            'DEPENDENCIES': [],
+        }
     }
 }
 

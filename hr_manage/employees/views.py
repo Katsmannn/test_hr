@@ -26,13 +26,12 @@ def positions(request):
 
     all_positions_query = 'SELECT * FROM positions ORDER BY name'
 
-    conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
-                       password=DB_PASSWORD)
-    cur = conn.cursor()
-    cur.execute(all_positions_query)
-    result = cur.fetchall()
-    cur.close()
-    conn.close()
+    with pg2.connect(
+        dbname=DB_NAME, user=DB_USER, host=DB_HOST, password=DB_PASSWORD
+    ) as conn:
+        with conn.cursor() as cur:
+            cur.execute(all_positions_query)
+            result = cur.fetchall()
     paginator = Paginator(result, PER_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
@@ -52,22 +51,19 @@ def new_position(request):
             'INSERT INTO positions (name, category) VALUES (%s, %s)'
         )
 
-        conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
-                           password=DB_PASSWORD)
-        cur = conn.cursor()
-        try:
-            cur.execute(
-                create_position_query,
-                (new_position_name, new_position_category)
-            )
-            conn.commit()
-        except Exception:
-            cur.close()
-            conn.close()
-            return render(request, 'newposition.html', {'form': form})
-        cur.close()
-        conn.close()
-        return redirect('positions')
+        with pg2.connect(
+            dbname=DB_NAME, user=DB_USER, host=DB_HOST, password=DB_PASSWORD
+        ) as conn:
+            with conn.cursor() as cur:
+                try:
+                    cur.execute(
+                        create_position_query,
+                        (new_position_name, new_position_category)
+                    )
+                    conn.commit()
+                except Exception:
+                    return render(request, 'newposition.html', {'form': form})
+                return redirect('positions')
     return render(request, 'newposition.html', {'form': form})
 
 
@@ -104,7 +100,6 @@ def edit_position(request, position_id):
             )
             conn.commit()
         except Exception as e:
-            print(e)
             cur.close()
             conn.close()
             return render(
@@ -127,16 +122,15 @@ def delete_position(request, position_id):
 
     delete_position_query = 'DELETE FROM positions WHERE id=%s'
 
-    conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
-                       password=DB_PASSWORD)
-    cur = conn.cursor()
-    try:
-        cur.execute(delete_position_query, (position_id,))
-        conn.commit()
-    except Exception:
-        pass
-    cur.close()
-    conn.close()
+    with pg2.connect(
+        dbname=DB_NAME, user=DB_USER, host=DB_HOST, password=DB_PASSWORD
+    ) as conn:
+        with conn.cursor() as cur:
+            try:
+                cur.execute(delete_position_query, (position_id,))
+                conn.commit()
+            except Exception:
+                pass
     return redirect('positions')
 
 
@@ -153,13 +147,12 @@ def employees(request):
         + 'ORDER BY employees.full_name'
     )
 
-    conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
-                       password=DB_PASSWORD)
-    cur = conn.cursor()
-    cur.execute(all_employees_query)
-    result = cur.fetchall()
-    cur.close()
-    conn.close()
+    with pg2.connect(
+        dbname=DB_NAME, user=DB_USER, host=DB_HOST, password=DB_PASSWORD
+    ) as conn:
+        with conn.cursor() as cur:
+            cur.execute(all_employees_query)
+            result = cur.fetchall()
     paginator = Paginator(result, PER_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
@@ -184,27 +177,24 @@ def new_employee(request):
             + 'VALUES (%s, %s, %s, %s)'
         )
 
-        conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
-                           password=DB_PASSWORD)
-        cur = conn.cursor()
-        try:
-            cur.execute(
-                create_employee_query,
-                (
-                    new_employee_name,
-                    new_employee_position,
-                    new_employee_birthday,
-                    new_employee_sex
-                )
-            )
-            conn.commit()
-        except Exception:
-            cur.close()
-            conn.close()
-            return render(request, 'newemployee.html', {'form': form})
-        cur.close()
-        conn.close()
-        return redirect('employees')
+        with pg2.connect(
+            dbname=DB_NAME, user=DB_USER, host=DB_HOST, password=DB_PASSWORD
+        ) as conn:
+            with conn.cursor() as cur:
+                try:
+                    cur.execute(
+                        create_employee_query,
+                        (
+                            new_employee_name,
+                            new_employee_position,
+                            new_employee_birthday,
+                            new_employee_sex
+                        )
+                    )
+                    conn.commit()
+                except Exception:
+                    return render(request, 'newemployee.html', {'form': form})
+                return redirect('employees')
     return render(request, 'newemployee.html', {'form': form})
 
 
@@ -285,13 +275,12 @@ def employee_detail(request, employee_id):
         + 'WHERE employees.id=%s'
     )
 
-    conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
-                       password=DB_PASSWORD)
-    cur = conn.cursor()
-    cur.execute(get_employee_query, (employee_id,))
-    result = cur.fetchone()
-    cur.close()
-    conn.close()
+    with pg2.connect(
+        dbname=DB_NAME, user=DB_USER, host=DB_HOST, password=DB_PASSWORD
+    ) as conn:
+        with conn.cursor() as cur:
+            cur.execute(get_employee_query, (employee_id,))
+            result = cur.fetchone()
     employee = (
         result[0],
         result[1],
@@ -307,11 +296,10 @@ def delete_employee(request, employee_id):
 
     delete_employee_query = 'DELETE FROM employees WHERE id=%s'
 
-    conn = pg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST,
-                       password=DB_PASSWORD)
-    cur = conn.cursor()
-    cur.execute(delete_employee_query, (employee_id,))
-    conn.commit()
-    cur.close()
-    conn.close()
+    with pg2.connect(
+        dbname=DB_NAME, user=DB_USER, host=DB_HOST, password=DB_PASSWORD
+    ) as conn:
+        with conn.cursor() as cur:
+            cur.execute(delete_employee_query, (employee_id,))
+            conn.commit()
     return redirect('employees')

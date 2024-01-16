@@ -35,7 +35,7 @@ def positions(request):
     paginator = Paginator(result, PER_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, 'positions.html', {'page': page})
+    return render(request, 'positions.html', {'page': page, 'type': 'pos'})
 
 
 def new_position(request):
@@ -156,7 +156,7 @@ def employees(request):
     paginator = Paginator(result, PER_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, 'employees.html', {'page': page})
+    return render(request, 'employees.html', {'page': page, 'type': 'emp'})
 
 
 def new_employee(request):
@@ -199,7 +199,7 @@ def new_employee(request):
 
 
 def edit_employee(request, employee_id):
-    '''Редактиование записи сотрудника с id=employee_id.'''
+    '''Редактирование записи сотрудника с id=employee_id.'''
 
     get_employee_query = 'SELECT * FROM employees WHERE id=%s'
 

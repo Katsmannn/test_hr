@@ -58,7 +58,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': 5432,
         'TEST': {
-            'DEPENDENCIES': ['test_sqlite'],
+            'DEPENDENCIES': [],
         }
     },
     'test_sqlite': {
